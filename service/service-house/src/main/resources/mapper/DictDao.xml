@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.dao.DictDao">
+
+    <select id="findListByParentId" resultType="dict">
+        SELECT * FROM hse_dict WHERE parent_id = #{parentId}
+    </select>
+    <select id="countIsParent" resultType="int">
+        SELECT count(*) FROM hse_dict WHERE parent_id = #{id}
+    </select>
+    <select id="getByDictCode" resultType="dict">
+        SELECT * FROM hse_dict WHERE dict_code = #{dictCode}
+    </select>
+
+    <select id="getNameById" resultType="string">
+        SELECT NAME FROM hse_dict WHERE id = #{id}
+    </select>
+
+</mapper>

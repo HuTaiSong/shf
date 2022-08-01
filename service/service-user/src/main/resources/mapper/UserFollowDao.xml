@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.dao.UserFollowDao">
+
+    <insert id="insert">
+        insert into user_follow (user_id, house_id)
+        values
+            (#{userId},#{houseId})
+    </insert>
+    <select id="countByUserIdAndHouseId" resultType="int">
+        SELECT COUNT(*) FROM user_follow WHERE user_id = #{userId} AND house_id = #{houseId} AND is_deleted = 0
+    </select>
+
+    <select id="findListPage" resultType="com.atguigu.vo.UserFollowVo">
+        SELECT
+            uf.id,
+            uf.house_id,
+            uf.create_time,
+            hc.name communityName,
+            hh.name,
+            hh.build_area,
+            hh.total_price,
+            hh.default_image_url,
+            hh.house_type_id,
+            hh.floor_id,
+            hh.direction_id
+        FROM user_follow uf
+                 JOIN hse_house hh
+                      ON uf.house_id = hh.id
+                 JOIN hse_community hc
+                      ON hh.community_id = hc.id
+        WHERE uf.user_id = #{userId}
+          AND uf.is_deleted = 0
+          AND hh.is_deleted = 0
+          AND hc.is_deleted = 0
+    </select>
+
+    <delete id="delete">
+        update user_follow set update_time =now(),is_deleted = 1 where id = #{id}
+    </delete>
+
+</mapper>

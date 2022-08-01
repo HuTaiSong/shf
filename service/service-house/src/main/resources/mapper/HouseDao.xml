@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atguigu.dao.HouseDao">
+
+    <select id="findByPage" resultType="house">
+        select * from hse_house
+        <where>
+            <if test="communityId != null and communityId != ''">
+                community_Id = #{communityId} and
+            </if>
+            <if test="name != null and name != ''">
+                name like concat("%", #{name}, "%") and
+            </if>
+            <if test="houseTypeId != null and houseTypeId != ''">
+                house_Type_Id = #{houseTypeId} and
+            </if>
+            <if test="floorId != null and floorId != ''">
+                floor_Id = #{floorId} and
+            </if>
+            <if test="buildStructureId != null and buildStructureId != ''">
+                build_Structure_Id = #{buildStructureId} and
+            </if>
+            <if test="directionId != null and directionId != ''">
+                direction_Id = #{directionId} and
+            </if>
+            <if test="decorationId != null and decorationId != ''">
+                decoration_Id = #{decorationId} and
+            </if>
+            <if test="houseUseId != null and houseUseId != ''">
+                house_Use_Id = #{houseUseId} and
+            </if>
+            is_deleted = 0
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insert">
+        insert into hse_house
+        (name,community_id, description, total_price, unit_price,
+         build_area, inside_area, house_type_id, floor_id,
+         build_structure_id, direction_id, decoration_id, house_use_id,
+         elevator_ratio, listing_date, last_trade_date, default_image_url)
+        values
+            (
+                #{name},
+                #{communityId},
+                #{description},
+                #{totalPrice},
+                #{unitPrice},
+                #{buildArea},
+                #{insideArea},
+                #{houseTypeId},
+                #{floorId},
+                #{buildStructureId},
+                #{directionId},
+                #{decorationId},
+                #{houseUseId},
+                #{elevatorRatio},
+                #{listingDate},
+                #{lastTradeDate},
+                'http://rfmijz5u2.hb-bkt.clouddn.com/2eac5c255bee05aeb19fd578347e29599c1c503e.jpg%40293w_230h_progressive.jpg'
+            )
+    </insert>
+
+    <select id="getById" resultType="house">
+        select * from hse_house where id = #{id} and is_deleted = 0
+    </select>
+
+    <update id="update">
+        update hse_house
+        <set>
+            <if test="communityId!=null and communityId!=''">
+                community_Id = #{communityId},
+            </if>
+            <if test="name!=null and name!=''">
+                name = #{name},
+            </if>
+            <if test="description!=null and description!=''">
+                description = #{description},
+            </if>
+            <if test="totalPrice!=null and totalPrice!=''">
+                total_Price = #{totalPrice},
+            </if>
+            <if test="unitPrice!=null and unitPrice!=''">
+                unit_Price = #{unitPrice},
+            </if>
+            <if test="buildArea!=null and buildArea!=''">
+                build_Area = #{buildArea},
+            </if>
+            <if test="insideArea!=null and insideArea!=''">
+                inside_Area = #{insideArea},
+            </if>
+            <if test="houseTypeId!=null and houseTypeId!=''">
+                house_Type_Id = #{houseTypeId},
+            </if>
+            <if test="floorId!=null and floorId!=''">
+                floor_Id = #{floorId},
+            </if>
+            <if test="buildStructureId!=null and buildStructureId!=''">
+                build_Structure_Id = #{buildStructureId},
+            </if>
+            <if test="directionId!=null and directionId!=''">
+                direction_Id = #{directionId},
+            </if>
+            <if test="decorationId!=null and decorationId!=''">
+                decoration_Id = #{decorationId},
+            </if>
+            <if test="houseUseId!=null and houseUseId!=''">
+                house_Use_Id = #{houseUseId},
+            </if>
+            <if test="elevatorRatio!=null and elevatorRatio!=''">
+                elevator_Ratio = #{elevatorRatio},
+            </if>
+            <if test="listingDate!=null">
+                listing_Date = #{listingDate},
+            </if>
+            <if test="lastTradeDate!=null">
+                last_Trade_Date = #{lastTradeDate},
+            </if>
+            <!-- 如果status=0，会当做""来对待，仅限于Integer类型，对于Long没有这个要求-->
+            <if test="status!=null">
+                status = #{status},
+            </if>
+            update_time = now()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="delete">
+        update hse_house set hse_house.is_deleted=1,hse_house.update_time=now() where id =#{id}
+    </delete>
+
+    <select id="findListPage" resultType="com.atguigu.vo.HouseVo">
+        SELECT
+        c.name communityName,
+        h.id,
+        h.name,
+        h.build_area,
+        h.total_price ,
+        h.unit_price,
+        h.house_type_id,
+        h.floor_id,
+        h.direction_id,
+        h.default_image_url,
+        h.create_time
+        FROM hse_house h
+        JOIN hse_community c
+        ON h.community_id = c.id
+        <where>
+            <if test="areaId!=null and areaId!=''">
+                and c.area_Id = #{areaId}
+            </if>
+            <if test="plateId!=null and plateId!=''">
+                and c.plate_Id = #{plateId}
+            </if>
+            <if test="keyword!=null and keyword!=''">
+                and h.name like "%"#{keyword}"%"
+            </if>
+            <if test="totalPrice!=null">
+                and h.total_Price >= #{totalPrice}
+            </if>
+            <if test="houseTypeId!=null and houseTypeId!=''">
+                and h.house_Type_Id = #{houseTypeId}
+            </if>
+            <if test="floorId!=null and floorId!=''">
+                and h.floor_Id = #{floorId}
+            </if>
+            <if test="buildStructureId!=null and buildStructureId!=''">
+                and h.build_Structure_Id = #{buildStructureId}
+            </if>
+            <if test="directionId!=null and directionId!=''">
+                and h.direction_Id = #{directionId}
+            </if>
+            <if test="decorationId!=null and decorationId!=''">
+                and h.decoration_Id = #{decorationId}
+            </if>
+            <if test="houseUseId!=null and houseUseId!=''">
+                and h.house_Use_Id = #{houseUseId}
+            </if>
+            AND c.is_deleted = 0
+            AND h.is_deleted = 0
+            AND h.status = 1
+        </where>
+
+        <if test="defaultSort==1">
+            order by h.id desc
+        </if>
+        <if test="priceSort==1">
+            order by h.total_price desc
+        </if>
+        <if test="timeSort==1">
+            order by h.create_time desc
+        </if>
+    </select>
+
+</mapper>

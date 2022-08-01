@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--Dubbo配置-->
+    <!--我是谁，当前应用的名称 -->
+    <dubbo:application name="web-admin"></dubbo:application>
+    <!-- 配置注册中心的地址-->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181"></dubbo:registry>
+    <!-- 扫描@Reference (Dubbo)所在包,会不会连带将@Controller（SpringMVC）也扫描-->
+    <dubbo:annotation package="com.atguigu.controller, com.atguigu.config"></dubbo:annotation>
+    <!--检查要访问的服务是否已经存在   -->
+    <dubbo:consumer check="true" timeout="3000000"></dubbo:consumer>
+
+</beans>
